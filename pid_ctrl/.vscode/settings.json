@@ -1,0 +1,22 @@
+{
+    "files.associations": {
+        "clocks.h": "c",
+        "timer.h": "c",
+        "uart.h": "c",
+        "pwm.h": "c",
+        "printf.h": "c",
+        "irq.h": "c",
+        "scb.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "time.h": "c",
+        "system_error": "cpp",
+        "array": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "cstddef": "cpp",
+        "max6675.h": "c"
+    }
+}

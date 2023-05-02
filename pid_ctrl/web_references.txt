@@ -1,0 +1,5 @@
+https://www.i-programmer.info/programming/hardware/14849-the-pico-in-c-basic-pwm.html?start=2
+
+https://github.com/HeadBoffin/Pico-Three-Way-Serial/blob/main/Pico-Three-Way-Serial/Pico-Three-Way-Serial.cpp
+
+https://stackoverflow.com/questions/5029840/convert-char-to-int-in-c-and-c
