@@ -34,7 +34,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
     PID::SetTunings(Kp, Ki, Kd, POn);
 
     //lastTime = millis()-SampleTime;
-    lastTime =time_us_32() * 1000-SampleTime;
+    lastTime =(time_us_32() / 1000)-SampleTime;
 }
 
 /*Constructor (...)*********************************************************
@@ -59,7 +59,7 @@ PID::PID(double* Input, double* Output, double* Setpoint,
 bool PID::Compute()
 {
    if(!inAuto) return false;
-   unsigned long now = time_us_32() * 1000;//millis();
+   unsigned long now = (time_us_32() / 1000);//millis();
    unsigned long timeChange = (now - lastTime);
    if(timeChange>=SampleTime)
    {

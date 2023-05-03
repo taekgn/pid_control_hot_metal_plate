@@ -49,6 +49,23 @@ void on_pwm_wrap()
   //Power it
 }
 
+uint32_t pwm_set_freq_duty(uint slice_num,
+                           uint channel, uint32_t freq, int dutycycle)
+{
+  uint32_t clock = 125000000;
+  // Default Pico Clock speed variable
+  uint32_t divider16 = clock / freq / 4096 +
+                       (clock % (freq * 4096) != 0);
+  if (divider16 / 16 == 0)
+    divider16 = 16;
+  uint32_t wrap = clock * 16 / divider16 / freq - 1;
+  pwm_set_clkdiv_int_frac(slice_num, divider16 / 16,
+                          divider16 & 0xF);
+  pwm_set_wrap(slice_num, wrap);
+  pwm_set_chan_level(slice_num, channel, wrap * dutycycle / 100);
+  return wrap;
+}
+
 uint8_t spi_transfer(uint8_t data)
 {
   uint8_t rx_data;
@@ -125,6 +142,9 @@ int main()
   pwm_set_irq_enabled(slice_num, true);
   irq_set_exclusive_handler(PWM_IRQ_WRAP, on_pwm_wrap);
   irq_set_enabled(PWM_IRQ_WRAP, true);
+  // uint chan2 = pwm_gpio_to_channel(twopin);
+  // pwm_set_freq_duty(slice_num, chan2, 1000, 100); // Slice, 2MHz, 50%
+  // pwm_set_enabled(slice_num, true);
   // Get some sensible defaults for the slice configuration. By default, the
   // counter is allowed to wrap over its maximum range (0 to 2**16-1)
   pwm_config config = pwm_get_default_config();
@@ -134,10 +154,12 @@ int main()
   pwm_init(slice_num, &config, true);
   //////////////////////////////////////////////////////////////////////////////////////
   Input = readCelsius();
-  Setpoint = 35.00; // Goal Temperature
+  Setpoint = 32.00; // Goal Temperature
   // turn the PID on
   myPID.SetMode(AUTOMATIC);
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  uint32_t stt = time_us_32();
+  printf("\nAnalog, Time, Temperature");
   while (true)
   {
     Input = readCelsius();
@@ -152,9 +174,9 @@ int main()
       myPID.SetTunings(aggKp, aggKi, aggKd);
     }
     myPID.Compute();
-    printf("\nTemp is: %.2f", readCelsius());
-    printf("\nPID Output is: %.2f", Output);
+    //printf("\nAnalog, Time, Temperature");
+    printf("\n%.2f, %d, %.2f", Output, (time_us_32()- stt) / 1000000, readCelsius());
     // For the MAX6675 to update, you must delay AT LEAST 250ms between reads!
-    sleep_ms(500);
+    sleep_ms(1000);
   }
 }
